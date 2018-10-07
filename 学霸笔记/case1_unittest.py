@@ -1,19 +1,19 @@
-#encoding:utf8
+# encoding:utf8
 
 
 from selenium import webdriver
 from time import sleep
 import unittest
 
+
 class SendMsgCase(unittest.TestCase):
 
     def setUp(self):
         self.dr = webdriver.Chrome()
         self.dr.get('https://h5.ele.me/login/#redirect=https%3A%2F%2Fwww.ele.me%2Fhome%2F')
-        self.dr.maximize_window()
         self.dr.implicitly_wait(10)
 
-    def by_css(self,css):
+    def by_css(self, css):
         return self.dr.find_element_by_css_selector(css)
 
     #  手机号码输入框定位
@@ -29,24 +29,31 @@ class SendMsgCase(unittest.TestCase):
         return self.by_css('#registerContainer > div > div.codeSendHint').text
 
     #   发送验证码
-    def send_msg(self,mobile_phone):
+    def send_msg(self, mobile_phone):
         self.mobile_phone_input_box().send_keys(mobile_phone)
         self.send_msg_button().click()
 
     #   测试用例
-    def test_send_msg(self):
-        self.send_msg('0000000000')
+    def test_send_msg_button(self):
+        # 发送验证码
+        self.send_msg('输入你的电话号码')
         sleep(2)
+
         #   验证【免费获取验证码】按钮 被禁用
-        # print(self.send_msg_button().is_enabled())
         self.assertFalse(self.send_msg_button().is_enabled())
+
+        # 期望结果
         expected_result = '已发送'
+
+        # 预期结果
         actual_result = self.send_msg_button().text
-        # print(actual_result)
+
+        # 验证 实际结果包含预期结果 “已经发送”
         self.assertTrue(expected_result in actual_result)
 
     def tearDown(self):
         self.dr.quit()
+
 
 if __name__ == '__main__':
     unittest.main()
